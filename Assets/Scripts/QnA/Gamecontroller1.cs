@@ -4,6 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Windows.Speech;
+
 
 public class Gamecontroller1 : MonoBehaviour
 {
@@ -16,6 +18,13 @@ public class Gamecontroller1 : MonoBehaviour
     string emotion = "nervous";
     int question = 0;
 
+
+    private string[] keywords = new string[] { "killer", "blood", "crowed", "Yes", "No", "It was my first time", "I have no idea", "Run away.", "told the police about incident" };
+    public ConfidenceLevel confidence = ConfidenceLevel.Medium;
+    public string word;
+    public KeywordRecognizer recognizer;
+
+
     // buttons for the menu
     private Button buttonResume;
     private Button buttonStartNewGame;
@@ -26,14 +35,14 @@ public class Gamecontroller1 : MonoBehaviour
     private Button button2;
     private Button button3;
     private Button button4;
-    private Button buttonClueList;
+   // private Button buttonClueList;
     private Button buttonMainMenu;
 
     // Main dialogue box, clue list and money available
     private Text dialogueBox;
     private Text dialogueBoxClueList;
     private Text dialogueBoxCash;
- 
+
 
     // audio source for buttons, music and sound effects
     public AudioSource buttonSoundSource;
@@ -83,15 +92,15 @@ public class Gamecontroller1 : MonoBehaviour
 
     // instance of the player
     PlayerQ steele = new PlayerQ();
-     Score score = new Score(); 
+    Score score = new Score();
 
-    
+
 
     // holds information about the most recent purchase (used in NodeNormal() to determine 
     Item lastItem = new Item("lastItem", 0);
 
     // available items to buy
- 
+
 
     // current node tracks the player's progress. It's set again every time the player enters a new node
     Node currentNode = new Node();
@@ -126,23 +135,26 @@ public class Gamecontroller1 : MonoBehaviour
 
     // Mikko's dialogue
     private string d_office01 = "what did you saw when you enterd the room?\n" +
-        "\n1.\t killer.\t \n" +
-        "\n2.\t blood.\t \n" +
-        "\n3.\t crowed.\t";
+        "\n1.\tkiller\t \n" +
+        "\n2.\tblood\t \n" +
+        "\n3.\tcrowed\t";
 
     private string d_office02 = "Do you used to visit xyz store regulary?\n" +
-        "\n1.\t yes.\t \n" +
-        "\n2.\t No.\t \n" +
-        "\n3.\t It was my first time.\t";
+        "\n1.\tYes\t \n" +
+        "\n2.\tNo\t \n" +
+        "\n3.\tIt was my first time.\t";
 
     private string d_new = "Did anyone else see it happen?\n" +
-        "\n1.\t yes.\t \n" +
-        "\n2.\t No.\t \n" +
-        "\n3.\t i have no idea.\t";
+        "\n1.\tYes\t \n" +
+        "\n2.\tNo\t \n" +
+        "\n3.\tI have no idea\t";
     private string d_office = "What was your first reaction to the incident?\n" +
-       "\n1.\t Run away.\t \n" +
-       "\n2.\t told the police about incident.\t \n" +
-       "\n3.\t Nothing.\t";
+       "\n1.\tRun away\t \n" +
+       "\n2.\ttold the police about incident\t \n" +
+       "\n3.\tNothing\t";
+
+
+    public string[] Keywords { get => keywords; set => keywords = value; }
 
 
 
@@ -159,7 +171,7 @@ public class Gamecontroller1 : MonoBehaviour
         start.SetHasMusicClip(true);
         start.SetMyMusicClip(m_menuMusic);
         start.SetHasClue(true);
-       
+
 
         // office01
         nn_office01.Add(office02); nn_office01.Add(office); nn_office01.Add(nnew);
@@ -167,10 +179,8 @@ public class Gamecontroller1 : MonoBehaviour
         office01.SetDialogue(d_office01);
         office01.SetScore(60);
         office01.SetTotal(100);
-        office01.SetAnswer(" killer.");
-        office01.SetButton1text("killer");
-        office01.SetButton2text("blood");
-        office01.SetButton3text("crowd");
+        office01.SetAnswer("killer.");
+
 
         office01.SetExpression("happy");
         office01.SetEmotion("nervous");
@@ -184,7 +194,7 @@ public class Gamecontroller1 : MonoBehaviour
         office02.AddNextNodes(nn_office02);
         office02.SetScore(60);
         office02.SetTotal(100);
-        office02.SetAnswer(" yes.");
+        office02.SetAnswer("Yes.");
         office02.SetExpression("surprised");
         office02.SetEmotion("nervous");
         office02.SetDialogue(d_office02);
@@ -192,15 +202,13 @@ public class Gamecontroller1 : MonoBehaviour
         office02.SetMyAudioClip(a_pickup);
         office02.SetHasMusicClip(true);
         office02.SetMyMusicClip(m_rainSofter);
-        office02.SetButton1text("yes");
-        office02.SetButton2text("no");
-        office02.SetButton3text("it was my first time");
+       
 
         nn_office.Add(office02); nn_office.Add(nnew); nn_office.Add(office01);
         office.AddNextNodes(nn_office);
         office.SetScore(60);
         office.SetTotal(100);
-        office.SetAnswer(" Run away.");
+        office.SetAnswer("Run away.");
         office.SetExpression("surprised");
         office.SetEmotion("nervous");
         office.SetDialogue(d_office);
@@ -215,7 +223,7 @@ public class Gamecontroller1 : MonoBehaviour
         nnew.AddNextNodes(nn_new);
         nnew.SetScore(60);
         nnew.SetTotal(100);
-        nnew.SetAnswer(" No.");
+        nnew.SetAnswer("No.");
         nnew.SetExpression("surprised");
         nnew.SetEmotion("nervous");
         nnew.SetDialogue(d_new);
@@ -233,20 +241,17 @@ public class Gamecontroller1 : MonoBehaviour
     // ========================================================================================================================================================= CREATE UI
     private void CreateUI()
     {
-        canvasMainMenu = (Canvas)GameObject.Find("canvasMainMenu").GetComponent<Canvas>();
+        
         canvasGame = (Canvas)GameObject.Find("canvasGame").GetComponent<Canvas>();
 
 
-        buttonMainMenu = (Button)GameObject.Find("buttonMainMenu").GetComponent<Button>();      //find menu buttons in Unity
-        buttonResume = (Button)GameObject.Find("buttonResume").GetComponent<Button>();
-        buttonStartNewGame = (Button)GameObject.Find("buttonStartNewGame").GetComponent<Button>();
-        buttonQuit = (Button)GameObject.Find("buttonQuit").GetComponent<Button>();
+        
 
         button1 = (Button)GameObject.Find("button1").GetComponent<Button>();                        //find gameplay buttons in Unity
         button2 = (Button)GameObject.Find("button2").GetComponent<Button>();
         button3 = (Button)GameObject.Find("button3").GetComponent<Button>();
         button4 = (Button)GameObject.Find("button4").GetComponent<Button>();
-        buttonClueList = (Button)GameObject.Find("buttonClueList").GetComponent<Button>();      //find the button to toggle cluelist and wallet in Unity
+        //buttonClueList = (Button)GameObject.Find("buttonClueList").GetComponent<Button>();      //find the button to toggle cluelist and wallet in Unity
 
 
         dialogueBox = (Text)GameObject.Find("dialogueBox").GetComponent<Text>();                    //find the box where the node dialogue is printed in Unity
@@ -254,8 +259,8 @@ public class Gamecontroller1 : MonoBehaviour
         dialogueBoxCash = (Text)GameObject.Find("dialogueBoxCash").GetComponent<Text>();            //find the box where the player cash is printed in Unity
         this.dialogueBoxClueList.gameObject.SetActive(true);
         this.dialogueBoxCash.gameObject.SetActive(true);
-        this.dialogueBoxCash.text =score.GetScore().ToString();
-       
+        this.dialogueBoxCash.text = score.GetScore().ToString();
+
 
         //  b_background = (Image)GameObject.Find("b_background").GetComponent<Image>();
         /*
@@ -267,20 +272,53 @@ public class Gamecontroller1 : MonoBehaviour
         //  nodeMusicSource = (AudioSource)GameObject.Find("nodeMusicSource").GetComponent<AudioSource>();
         //  nodeSoundSource = (AudioSource)GameObject.Find("nodeSoundSource").GetComponent<AudioSource>();
 
-        buttonResume.onClick.AddListener(delegate { ResumeGame(); });                         //listeners for menu buttons
-        buttonMainMenu.onClick.AddListener(delegate { DisplayMainMenu(); });
-        buttonStartNewGame.onClick.AddListener(delegate { StartNewGame(); });
-        buttonQuit.onClick.AddListener(delegate { QuitGame(); });
+      
 
         button1.onClick.AddListener(delegate { ButtonClicked(button1); });                       //listeners for gameplay buttons
         button2.onClick.AddListener(delegate { ButtonClicked(button2); });
         button3.onClick.AddListener(delegate { ButtonClicked(button3); });
         button4.onClick.AddListener(delegate { ButtonClicked(button4); });
 
-        buttonClueList.onClick.AddListener(delegate { ToggleClueListAndCash(); });
+        //buttonClueList.onClick.AddListener(delegate { ToggleClueListAndCash(); });
     }
 
     // ========================================================================================================================================================= BUTTON FUNCTIONALITY FOR MENUS
+
+
+    private void Recognizer_OnPhraseRecognized(PhraseRecognizedEventArgs args)
+    {
+        word = args.text;
+        string[] answer = { "" };
+        answer = currentNode.GetDialogue().ToString().Split('\t');
+
+        
+        Debug.Log(answer[1]);
+        Debug.Log(answer[3]);
+        Debug.Log(answer[5]);
+        Debug.Log(word);
+        if (word.Equals(answer[1]))
+        {
+            NodeNormal(button1);
+        }
+        if (word.Equals(answer[3]))
+        {
+            NodeNormal(button2);
+        }
+        if (word.Equals(answer[5]))
+        {
+            NodeNormal(button3);
+        }
+        if (word.Equals(answer[4]))
+        {
+            NodeNormal(button4);
+        }
+
+     
+
+
+    }
+
+
 
     public void StartNewGame()                              //is called when Start New Game is clicked in the menu
     {
@@ -292,7 +330,7 @@ public class Gamecontroller1 : MonoBehaviour
         {
             dialogueBoxClueList.text = "";
         }
-       
+
         steele.ResetCash();
         UpdateCash();
         //this.canvasMainMenu.gameObject.SetActive(false);
@@ -300,54 +338,27 @@ public class Gamecontroller1 : MonoBehaviour
         StartNewAdventureAutoKey();
     }
 
-    public void ResumeGame()                                //is called when Resume is clicked in the menu
-    {
-        buttonSoundSource.PlayOneShot(a_buttonClickAudio);
+   
 
-        this.canvasMainMenu.gameObject.SetActive(false);
-        this.canvasGame.gameObject.SetActive(true);
-    }
+   
 
-    public void QuitGame()                                  //is called when Quit is clicked in the menu
-    {
-        buttonSoundSource.PlayOneShot(a_buttonClickAudio);
-
-        Application.Quit();
-    }
-
-    public void DisplayMainMenu()                           //is called when Menu button is clicked during gameplay
-    {
-
-        SceneManager.LoadScene("Main");
-      
-    }
+    
 
 
     // 	 =========================================================================================================================================================  BUTTON FUNCTIONALITY IN-GAME
 
 
-    private void ButtonClicked(Button b)                    //is called when any of the gameplay buttons (1,2,3,4) is pressed in a node
+    private void ButtonClicked(Button b)
     {
-        //		nodeMusicSource.Stop();
-       // nodeSoundSource.Stop();
 
-       // buttonSoundSource.PlayOneShot(a_buttonClickAudio); //plays the button click sound
-
-        if (currentNode.GetNextIsStore() == true)           //checks if the next node is a store. Is so, launches a separate method for store functionalities
-        {
-            NodeStore(b);
-        }
-        else                                                //otherwise normal node functionality is used
-        {
-            //NodeNormalTest(b);							// uncomment this & KeyboardButtonClicked() in Update() to enter developer more(no slowtyper, keyboard input 1-4.) 
-            NodeNormal(b);                                  // comment this if you enable developer mode
-        }
+        NodeNormal(b);
     }
 
     // 	 ========================================================================================================================================================= 	EXECUTING A NODE
     //THE MAIN NODE FUNCTIONALITY IS EXECUTED HERE
     private void NodeNormal(Button b)
     {
+      
         this.dialogueBox.text = "";         //clear the old dialogue text from the screen
 
         if (currentNode.GetNextIsReceipt() == true)
@@ -380,7 +391,7 @@ public class Gamecontroller1 : MonoBehaviour
         {
             buttonNumber = 4;
         }
-        string[] answer= {""};
+        string[] answer = { "" };
         if (currentNode != start)
         {
             double temp = 0;
@@ -400,13 +411,14 @@ public class Gamecontroller1 : MonoBehaviour
             {
                 temp = temp - (((double)currentNode.GetScore() / (double)currentNode.GetTotal()) * 15);
             }
-            
+
 
             answer = currentNode.GetDialogue().ToString().Split('\t');
 
-            Debug.Log(answer[buttonNumber]);
-            if (answer[buttonNumber].Equals(currentNode.GetAnswer()))
+    
+            if ((answer[buttonNumber].Equals(currentNode.GetAnswer())) || (word.Equals(currentNode.GetAnswer())) )
             {
+                Debug.Log("in if statement");
                 temp = temp + (((double)currentNode.GetScore() / (double)currentNode.GetTotal()) * 50);
                 score.SetScore(currentNode.GetScore());
             }
@@ -415,11 +427,11 @@ public class Gamecontroller1 : MonoBehaviour
                 temp = temp - (((double)currentNode.GetScore() / (double)currentNode.GetTotal()) * 50);
                 score.SetScore(-currentNode.GetScore());
             }
-            Debug.Log(temp);
+           // Debug.Log(temp);
         }
-        
-       
-        
+
+
+
         double percent = (double)score.GetScore() / 100.0;
 
         if (percent >= 1)
@@ -435,12 +447,12 @@ public class Gamecontroller1 : MonoBehaviour
             buttonNumber = 3;
         }
 
-        
+
         this.m_prevMusic = currentNode.GetMyMusicClip();        //these are set here in case two subsequent nodes have the same music clip
         this.prevHasMusic = currentNode.GetHasMusicClip();      //in that case, the music continues without interruption (see below)
-        Debug.Log(buttonNumber);
-        
-        currentNode = currentNode.GetNextNodes()[buttonNumber -1]; //set the new currentNode based on number of pressed button and the nextNodes list
+      
+
+        currentNode = currentNode.GetNextNodes()[buttonNumber - 1]; //set the new currentNode based on number of pressed button and the nextNodes list
                                                                     //of the previous node
 
 
@@ -473,210 +485,22 @@ public class Gamecontroller1 : MonoBehaviour
         this.button2.gameObject.SetActive(false);                   //we know the possible options of currentNode
         this.button3.gameObject.SetActive(false);
         this.button4.gameObject.SetActive(false);
-
+       
         StartCoroutine(TypeTextAndEnableButtonNormal(currentNode.GetDialogue())); //start stylized text output
                                                                                   //and enable correct gameplay buttons for the node
         this.dialogueBoxCash.text = score.GetScore().ToString();
-        if (currentNode.GetHasClue() == true)
-        {                       //write to cluelist
-            steele.AddToClueList(currentNode.GetClue());
-            WriteToClueList();
 
-        }
+
+
+
     }
 
-    private void NodeStore(Button b)
-    {
-        int buttonNumber = 0;
-
-        if (b == button1)
-        {
-            buttonNumber = 1;
-        }
-        if (b == button2)
-        {
-            buttonNumber = 2;
-        }
-        if (b == button3)
-        {
-            buttonNumber = 3;
-        }
-        if (b == button4)
-        {
-            buttonNumber = 4;
-        }
-        double percent = (double)score.GetScore() / 100.0;
-        Debug.Log(percent);
-        if (percent >= 1.0)
-        {
-            buttonNumber = 1;
-        }
-        else if (percent < 1.0 && percent >= 0.5)
-        {
-            buttonNumber = 2;
-        }
-        else
-        {
-            buttonNumber = 3;
-        }
-
-        this.m_prevMusic = currentNode.GetMyMusicClip();
-        this.prevHasMusic = currentNode.GetHasMusicClip();
-
-        currentNode = currentNode.GetNextNodes()[buttonNumber - 1];
-
-        if (currentNode.GetHasMusicClip())
-        {
-            if (prevHasMusic == false)
-            {
-                PlayMusic();
-            }
-            else
-            {
-                if (!(this.m_prevMusic.Equals(currentNode.GetMyMusicClip())))
-                {
-                    nodeMusicSource.Stop();
-                    PlayMusic();
-
-                }
-            }
-
-        }
-        else
-        {
-            nodeMusicSource.Stop();
-        }
-
-        PlayClip();
-
-        this.button1.gameObject.SetActive(false);
-        this.button2.gameObject.SetActive(false);
-        this.button3.gameObject.SetActive(false);
-        this.button4.gameObject.SetActive(false);
-
-        this.dialogueBox.text = "";
-
-        StartCoroutine(TypeTextAndEnableButtonStore(currentNode.GetDialogue()));
-
-        if (currentNode.GetHasClue() == true)
-        {
-            steele.AddToClueList(currentNode.GetClue());
-            WriteToClueList();
-        }
-    }
-
-    // 	 ========================================================================================================================================================= EXECUTING A NODE (TESTING)
-    //	THIS IS A TEST VERSION OF NodeNormal METHOD USED DURING TESTING&DEBUGGING. BASICALLY THE SAME AS ABOVE.
-    private void NodeNormalTest(Button b)
-    {
-        this.dialogueBox.text = "";
-
-        if (currentNode.GetNextIsReceipt() == true)
-        {
-            steele.SetCash(-(currentNode.GetDic()[b].GetItemPrice()));
-            this.lastItem = currentNode.GetDic()[b];
-            currentNode.GetNextNodes()[0].SetDialogue("You bought " + lastItem.GetItemName() + " for the low low price of " + lastItem.GetItemPrice() + " moneydollars.");
-
-            UpdateCash();
-
-            Debug.Log(lastItem.GetItemPrice());
-            Debug.Log(lastItem.GetItemName());
-        }
-
-        int buttonNumber = 0;
-
-        if (b == button1)
-        {
-            buttonNumber = 1;
-        }
-        if (b == button2)
-        {
-            buttonNumber = 2;
-        }
-        if (b == button3)
-        {
-            buttonNumber = 3;
-        }
-        if (b == button4)
-        {
-            buttonNumber = 4;
-        }
-
-        this.m_prevMusic = currentNode.GetMyMusicClip();
-        this.prevHasMusic = currentNode.GetHasMusicClip();
-
-        currentNode = currentNode.GetNextNodes()[buttonNumber - 1];
-
-        if (currentNode.GetHasMusicClip())
-        {
-            if (prevHasMusic == false)
-            {
-                PlayMusic();
-            }
-            else
-            {
-                if (!(this.m_prevMusic.Equals(currentNode.GetMyMusicClip())))
-                {
-                    nodeMusicSource.Stop();
-                    PlayMusic();
-
-                }
-            }
-
-        }
-        else
-        {
-            nodeMusicSource.Stop();
-        }
-
-        PlayClip();
-
-        this.button1.gameObject.SetActive(false);
-        this.button2.gameObject.SetActive(false);
-        this.button3.gameObject.SetActive(false);
-        this.button4.gameObject.SetActive(false);
-
-        switch (currentNode.GetNextNodes().Count)
-        {
-
-            case 1:
-                this.button1.gameObject.SetActive(true);
-                break;
-            case 2:
-                this.button1.gameObject.SetActive(true);
-                this.button2.gameObject.SetActive(true);
-                break;
-
-            case 3:
-                this.button1.gameObject.SetActive(true);
-                this.button2.gameObject.SetActive(true);
-                this.button3.gameObject.SetActive(true);
-                break;
-
-            case 4:
-                this.button1.gameObject.SetActive(true);
-                this.button2.gameObject.SetActive(true);
-                this.button3.gameObject.SetActive(true);
-                this.button4.gameObject.SetActive(true);
-                break;
-        }
-        dialogueBox.text = currentNode.GetDialogue();
-
-
-        if (currentNode.GetHasClue() == true)
-        {
-            steele.AddToClueList(currentNode.GetClue());
-            WriteToClueList();
-        }
-    }
-
-    // 	 ========================================================================================================================================================= PLAYING AUDIO AND MUSIC
 
     private void PlayClip()                                 //the method used for playing an audioclip if the node has one
     {
         if (currentNode.GetHasAudioClip() == true)
         {
-            nodeSoundSource.PlayOneShot(currentNode.GetMyAudioClip());
+            //nodeSoundSource.PlayOneShot(currentNode.GetMyAudioClip());
         }
     }
 
@@ -724,37 +548,18 @@ public class Gamecontroller1 : MonoBehaviour
                 this.button4.gameObject.SetActive(true);
                 break;
         }
+
+      
+
     }
 
-    private IEnumerator TypeTextAndEnableButtonStore(string textToPrint)    //separate method for printing text in a store node
-    {
-
-        foreach (char letter in textToPrint.ToCharArray())
-        {
-            //Debug.Log(letter);
-            this.dialogueBox.text += letter;
-            yield return new WaitForSeconds(letterPause);
-        }
-
-        foreach (KeyValuePair<Button, Item> _item in currentNode.GetDic())
-        {   //get the product catalog (Dictionary) from the store node
-            if (_item.Value.GetItemPrice() <= steele.GetCash())
-            {           //activate buttons only for items that the player can afford
-
-                _item.Key.gameObject.SetActive(true);
-            }
-        }
-    }
 
     private void UpdateCash()                                               //write the new cash amount to the screen
     {
-        this.dialogueBoxCash.text =  score.GetScore().ToString();
+        this.dialogueBoxCash.text = score.GetScore().ToString();
     }
 
-    private void WriteToClueList()
-    {                                       //write the last entry on the cluelist to screen
-        this.dialogueBoxClueList.text += steele.GetClueList()[steele.GetClueList().Count - 1] + "\n";
-    }
+
 
     private void ToggleClueListAndCash()
     {
@@ -775,20 +580,7 @@ public class Gamecontroller1 : MonoBehaviour
 
     // ========================================================================================================================================================= KEYBOARD COMMANDS
 
-    public void KeyboardEsc()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            if (this.canvasGame.isActiveAndEnabled)
-            {
-                DisplayMainMenu();
-            }
-            else
-            {
-                Application.Quit();
-            }
-        }
-    }
+    
 
     public void StartNewAdventureAutoKey()
     {
@@ -831,18 +623,24 @@ public class Gamecontroller1 : MonoBehaviour
 
         currentNode = start;
 
-        this.buttonResume.gameObject.SetActive(false);
-        this.canvasMainMenu.gameObject.SetActive(true);
-        this.canvasGame.gameObject.SetActive(false);
 
-       // currentNode.SetMyMusicClip(m_menuMusic);
-       // nodeMusicSource.clip = currentNode.GetMyMusicClip();
-       // nodeMusicSource.Play();
+      
+        // currentNode.SetMyMusicClip(m_menuMusic);
+        // nodeMusicSource.clip = currentNode.GetMyMusicClip();
+        // nodeMusicSource.Play();
+
+        Debug.Log("recognizer initialized");
+        recognizer = new KeywordRecognizer(keywords, confidence);
+        recognizer.OnPhraseRecognized += Recognizer_OnPhraseRecognized;
+        recognizer.Start();
+        StartNewGame();
+
     }
+
 
     public void Update()
     {
-        KeyboardEsc();
+       
         //KeyboardButtonClicked();					// uncomment if you want to ski
     }
 

@@ -26,9 +26,10 @@ public class Node
 	private AudioClip myAudioClip;
 	private AudioClip myMusicClip;
 	private bool hasAudioClip = false;
-	private bool hasMusicClip = false;
+    private bool hasMusicClip = false;
+    private bool repeated = false;
 
-	public Node  ()
+    public Node  ()
 	{
 	}
 
@@ -102,12 +103,16 @@ public class Node
 		return this.myMusicClip;
 	}
 
-	public bool GetHasAudioClip()
-	{
-		return this.hasAudioClip;
-	}
+    public bool GetHasAudioClip()
+    {
+        return this.hasAudioClip;
+    }
+    public bool GetRepeted()
+    {
+        return this.repeated;
+    }
 
-	public bool GetHasMusicClip()
+    public bool GetHasMusicClip()
 	{
 		return this.hasMusicClip;
 	}
@@ -197,12 +202,16 @@ public class Node
 		this.nextIsReceipt = _isReceipt;
 	}
 
-	public void SetHasAudioClip(bool _hasAudioClip) 
-	{
-		this.hasAudioClip = _hasAudioClip;
-	}
+    public void SetHasAudioClip(bool _hasAudioClip)
+    {
+        this.hasAudioClip = _hasAudioClip;
+    }
+    public void Setrepeted(bool _repeat)
+    {
+        this.repeated = _repeat;
+    }
 
-	public void SetMyAudioClip(AudioClip _myAudioClip)
+    public void SetMyAudioClip(AudioClip _myAudioClip)
 	{
 		this.myAudioClip = _myAudioClip;
 	}

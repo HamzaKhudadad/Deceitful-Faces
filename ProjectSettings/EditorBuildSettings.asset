@@ -6,15 +6,30 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/scene/Main_Menu.unity
-    guid: 753b8cdc9f7347f45b6f74aac49edac2
+    path: Assets/MainMenu/Scenes/MainMenu.unity
+    guid: c09f4b0b2a9226946aa44a3dd8ffdfa6
   - enabled: 1
-    path: Assets/scene/Loading_Screen.unity
-    guid: adfe4a06de953df449d58c21a2a06f9e
+    path: Assets/MainMenu/Scenes/LoadingScreen.unity
+    guid: 6540e3b3fcf225c4a89bee2bcc8d1682
   - enabled: 1
+    path: Assets/MainMenu/Scenes/Maze.unity
+    guid: d193b2b90e358f04685393c66d4ace54
+  - enabled: 0
+    path: Assets/EasyMainMenu/Scenes/LoginScreen.unity
+    guid: 4113930fb952b0141b3b20e9b61e1a3f
+  - enabled: 1
+    path: Assets/MainMenu/Scenes/Question.unity
+    guid: f66b8b6d5d3cab34fad8c4138c7e5779
+  - enabled: 0
     path: Assets/scene/Main.unity
     guid: 0119c3305c0f7e7469961ba72d222bbd
-  - enabled: 1
-    path: Assets/scene/Questionn Answer.unity
-    guid: f66b8b6d5d3cab34fad8c4138c7e5779
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 0
+    path: Assets/SpeedTutor_Full_Menu_System/Scenes/MainMen.unity
+    guid: e84c9862265a1104a9d724503d4111aa
+  - enabled: 0
+    path: Assets/SpeedTutor_Full_Menu_System/Scenes/Level1_Demo.unity
+    guid: a29848c6cbdc245439fd7641ab34b8bc
   m_configObjects: {}
