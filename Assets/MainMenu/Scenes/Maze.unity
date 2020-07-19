@@ -4215,7 +4215,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 543860571}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1db528b82e1cc5148bd29355d159ae7a, type: 3}
   m_Name: 
@@ -4248,6 +4248,7 @@ MonoBehaviour:
   m_dramaticMusic: {fileID: 0}
   m_dramaticMusic2: {fileID: 0}
   m_storeMusic: {fileID: 0}
+  mSlider: {fileID: 0}
 --- !u!114 &543860579
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4255,18 +4256,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 543860571}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3e7fd1bd7a4cabb478deb9c415884634, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  keywords:
-  - Tom.
-  - 3rd street north.
-  - colleagues.
-  - he was a cop.
-  - Yes.
-  - No.
+  image: {fileID: 0}
   confidence: 2
   word: 
   buttonSoundSource: {fileID: 0}

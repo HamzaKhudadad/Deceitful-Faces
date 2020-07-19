@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class UIController : MonoBehaviour {
 
@@ -11,20 +12,36 @@ public class UIController : MonoBehaviour {
     [Header("Both UI Panels")]
     public GameObject saveMenu;
     public GameObject pauseMenu;
+    public GameObject avatar;
+    public GameObject cam;
     Fader fader;
     [HideInInspector]
     public bool isOpen;
+    public bool avatarOpen;
+    public bool camOpen;
     Canvas[] allUI;
 
     public List<LoadSlotIdentifier> loadSlots;
 
     [HideInInspector]
     public bool usingUFPS = false;
+    private Button Escbutton;
+    private Button avatarbutton;
+    private Button cambutton;
 
     // Use this for initialization
     IEnumerator Start () {
-
+        avatarOpen=true;
+        camOpen = false;
+        Debug.Log(avatarOpen);
+        Escbutton = (Button)GameObject.Find("Escbutton").GetComponent<Button>();
+        Escbutton.onClick.AddListener(delegate { btnclicked(); });
+        avatarbutton = (Button)GameObject.Find("disableAvatar").GetComponent<Button>();
+        avatarbutton.onClick.AddListener(delegate { avtarbtnclicked(); });
+        cambutton = (Button)GameObject.Find("disablefeed").GetComponent<Button>();
+        cambutton.onClick.AddListener(delegate { cambtnclicked(); });
         //find fader
+
         fader = FindObjectOfType<Fader>();
 
         yield return new WaitForSeconds(0.5f);
@@ -33,7 +50,7 @@ public class UIController : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-
+        
         //if using UFPS
         if (usingUFPS)
             return; //exit
@@ -50,6 +67,52 @@ public class UIController : MonoBehaviour {
             }
         }
 	}
+
+    public void btnclicked()
+    {
+        EasyAudioUtility.instance.Play("Hover");
+       
+
+        if (!isOpen)
+            openPauseMenu();
+        else
+            closePauseMenu();
+
+    }
+
+    public void cambtnclicked()
+    {
+        EasyAudioUtility.instance.Play("Hover");
+        
+        if (camOpen)
+        {
+            cam.SetActive(false);
+            camOpen = false;
+        }
+        else
+        {
+            cam.SetActive(true);
+            camOpen = true;
+        }
+
+    }
+
+    public void avtarbtnclicked()
+    {
+        EasyAudioUtility.instance.Play("Hover");
+
+        if (avatarOpen)
+        {
+            avatar.SetActive(false);
+            avatarOpen = false;
+        }
+        else
+        {
+            avatar.SetActive(true);
+            avatarOpen = true;
+        }
+
+    }
 
     public void openPauseMenu() {
 
