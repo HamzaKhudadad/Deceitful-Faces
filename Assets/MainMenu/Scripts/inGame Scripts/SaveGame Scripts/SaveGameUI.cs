@@ -192,25 +192,50 @@ public class SaveGameUI : MonoBehaviour {
     /// Save Exact Positions of the player transform
     /// </summary>
     void SavePositions() {
+        Debug.Log("io");
 
-        Transform player = GameObject.FindGameObjectWithTag("Player").transform;
-        float x = player.position.x;
-        float y = player.position.y;
-        float z = player.position.z;
 
-        #if !EMM_ES2
+        Debug.Log(Gamecontroller1.id);
+        Debug.Log(Gamecontroller1.buttonNumber);
+        Debug.Log(Gamecontroller1.sscore);
 
-        PlayerPrefs.SetFloat("player.position.x", x);
-        PlayerPrefs.SetFloat("player.position.y", y);
-        PlayerPrefs.SetFloat("player.position.z", z);
-        
-        #else
+
+
+#if !EMM_ES2
+
+
+
+
+        if (SceneManager.GetActiveScene().name == "Qscreen")
+        {
+            PlayerPrefs.SetInt("id", Gamecontroller1.id);
+            PlayerPrefs.SetInt("Score", Gamecontroller1.sscore);
+            PlayerPrefs.SetInt("btn", Gamecontroller1.buttonNumber);
+        }
+
+        else if (SceneManager.GetActiveScene().name == "Qscreen2")
+        {
+            PlayerPrefs.SetInt("id", Gamecontroller2.id);
+            PlayerPrefs.SetInt("Score", Gamecontroller2.sscore);
+            PlayerPrefs.SetInt("btn", Gamecontroller2.buttonNumber);
+        }
+        else
+        {
+            PlayerPrefs.SetInt("id", Gamecontroller3.id);
+            PlayerPrefs.SetInt("Score", Gamecontroller3.sscore);
+            PlayerPrefs.SetInt("btn", Gamecontroller3.buttonNumber);
+        }
+
+
+       
+
+#else
 
         ES2.Save(x, "player.position.x");
         ES2.Save(y, "player.position.y");
         ES2.Save(z, "player.position.z");
 
-        #endif
+#endif
     }
 
 
@@ -251,26 +276,37 @@ public class SaveGameUI : MonoBehaviour {
     /// </summary>
     void LoadnSetPosition()
     {
+       
 
-        #if !EMM_ES2
+#if !EMM_ES2
 
-        float x = PlayerPrefs.GetFloat("player.position.x");
-        float y = PlayerPrefs.GetFloat("player.position.y");
-        float z = PlayerPrefs.GetFloat("player.position.z");
+        int id = PlayerPrefs.GetInt("id");
+        int score = PlayerPrefs.GetInt("Score");
+        int btn = PlayerPrefs.GetInt("btn");
 
-        #else
+        Debug.Log("lo");
+        Debug.Log(id);
+        Debug.Log(score);
+        Debug.Log(btn);
+#endif
 
-        float x = ES2.Load<float>("player.position.x");
-        float y = ES2.Load<float>("player.position.y");
-        float z = ES2.Load<float>("player.position.z");
+        if (SceneManager.GetActiveScene().name == "Qscreen") 
+        { 
+            Gamecontroller1.getsavedvalues(id, score, btn);
+        }
 
-        #endif
+        else if (SceneManager.GetActiveScene().name == "Qscreen2")
+        {
+            Gamecontroller2.getsavedvalues(id, score, btn);
+        }
+        else
+        {
+            Gamecontroller3.getsavedvalues(id, score, btn);
+        }
 
-        Vector3 loadedPosition = new Vector3(x, y, z);
 
-        //now find player!
-        Transform player = GameObject.FindGameObjectWithTag("Player").transform;
-        player.position = loadedPosition;
+
+
 
     }
 

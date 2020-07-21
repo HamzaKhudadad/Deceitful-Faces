@@ -1241,7 +1241,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f045d3c92e8b24847a4266b681e631e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  newGameSceneName: Maze
+  newGameSceneName: 
   quickSaveSlotID: 6
   MainOptionsPanel: {fileID: 250784042}
   StartGameOptionsPanel: {fileID: 1867278958}
@@ -1372,19 +1372,19 @@ MonoBehaviour:
     hasSubLevel: 1
     subLevelName: Los Santos!
     isLocked: 0
-    levelToLoad: Maze
+    levelToLoad: Qscreen1
     levelImage: {fileID: 21300000, guid: 40558d9f8646f084da4db95e3c4de9f3, type: 3}
   - levelName: Fadding Love
     hasSubLevel: 1
     subLevelName: prove me wrong!
     isLocked: 0
-    levelToLoad: Questionn Answer
+    levelToLoad: Qscreen2
     levelImage: {fileID: 21300000, guid: 0df48337ea2584c4ca842ac2a7cb57fb, type: 3}
   - levelName: Alien in Human
     hasSubLevel: 1
     subLevelName: where are you from?
     isLocked: 0
-    levelToLoad: Questionn Answer
+    levelToLoad: Qscreen3
     levelImage: {fileID: 21300000, guid: c88d3574d30e09e42824fa73943be844, type: 3}
 --- !u!95 &126885249
 Animator:
