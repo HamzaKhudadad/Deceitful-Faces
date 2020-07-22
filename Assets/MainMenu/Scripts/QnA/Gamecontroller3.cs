@@ -16,8 +16,9 @@ public class Gamecontroller3 : MonoBehaviour
     // ============================================================================================================================ CREATE UI ELEMENTS AND GENERAL VARIABLES ===
 
     // Canvas for the menu and in-game
-    Canvas canvasMainMenu;
+    Canvas instructions;
     Canvas canvasGame;
+    Canvas end;
     string expression = "happy" ;
     string emotion = "nervous";
     string[] expressions = { "angry", "disgust", "fear", "happy", "sad", "surprise", "neutral" };
@@ -31,6 +32,7 @@ public class Gamecontroller3 : MonoBehaviour
 
     public TextMeshProUGUI dialogueBox;
     public Button startbtn;
+    public TextMeshProUGUI endnote;
     public Slider mSlider;
     public RawImage image;
 
@@ -53,9 +55,7 @@ public class Gamecontroller3 : MonoBehaviour
 
 
     // buttons for the menu
-    private Button buttonResume;
-    private Button buttonStartNewGame;
-    private Button buttonQuit;
+    
 
     // in-game buttons
     private Button button1;
@@ -65,6 +65,7 @@ public class Gamecontroller3 : MonoBehaviour
     private Button Mainmenu;
     private Button buttonClueList;
     private Button buttonMainMenu;
+    private Button buttonRestart;
 
     // Main dialogue box, clue list and money available
 
@@ -251,9 +252,8 @@ public class Gamecontroller3 : MonoBehaviour
         office01.SetDialogue(d_office01);
         office01.SetScore(60);
         office01.SetTotal(100);
-        office01.SetAnswer("Zion.");
+        office01.SetAnswer("freinds.");
         office01.SetId(1);
-
         office01.SetExpression("happy");
         office01.SetEmotion("nervous");
        
@@ -263,7 +263,7 @@ public class Gamecontroller3 : MonoBehaviour
         office02.AddNextNodes(nn_office02);
         office02.SetScore(60);
         office02.SetTotal(100);
-        office02.SetAnswer("Yes.");
+        office02.SetAnswer("to have a fun and relaxing time by yourselves.");
         office02.SetExpression("surprised");
         office02.SetEmotion("nervous");
         office02.SetDialogue(d_office02);
@@ -274,7 +274,7 @@ public class Gamecontroller3 : MonoBehaviour
         office.AddNextNodes(nn_office);
         office.SetScore(60);
         office.SetTotal(100);
-        office.SetAnswer("friends.");
+        office.SetAnswer("our families.");
         office.SetExpression("surprised");
         office.SetEmotion("nervous");
         office.SetDialogue(d_office);
@@ -286,7 +286,7 @@ public class Gamecontroller3 : MonoBehaviour
         nnew.AddNextNodes(nn_new);
         nnew.SetScore(60);
         nnew.SetTotal(100);
-        nnew.SetAnswer("3rd street north.");
+        nnew.SetAnswer("around 10 years.");
         nnew.SetExpression("surprised");
         nnew.SetEmotion("nervous");
         nnew.SetDialogue(d_new);
@@ -296,7 +296,7 @@ public class Gamecontroller3 : MonoBehaviour
         work.AddNextNodes(nwork);
         work.SetScore(60);
         work.SetTotal(100);
-        work.SetAnswer("AK builders.");
+        work.SetAnswer("yes,might be possible.");
         work.SetExpression("surprised");
         work.SetEmotion("nervous");
         work.SetDialogue(d_work);
@@ -306,27 +306,27 @@ public class Gamecontroller3 : MonoBehaviour
         company.AddNextNodes(ncompany);
         company.SetScore(60);
         company.SetTotal(100);
-        company.SetAnswer("No.");
+        company.SetAnswer("Yes.");
         company.SetExpression("surprised");
         company.SetEmotion("nervous");
         company.SetDialogue(d_company);
         company.SetId(6);
 
-        nvisit.Add(arrest); nvisit.Add(where);
+        nvisit.Add(arrest); nvisit.Add(who);
         visit.AddNextNodes(nvisit);
         visit.SetScore(60);
         visit.SetTotal(100);
-        visit.SetAnswer("No.");
+        visit.SetAnswer("Yes.");
         visit.SetExpression("surprised");
         visit.SetEmotion("nervous");
         visit.SetDialogue(d_visit);
         visit.SetId(7);
 
-        narrest.Add(whyg); narrest.Add(where);
+        narrest.Add(office02); narrest.Add(who);
         arrest.AddNextNodes(narrest);
         arrest.SetScore(60);
         arrest.SetTotal(100);
-        arrest.SetAnswer("No.");
+        arrest.SetAnswer("Mine.");
         arrest.SetExpression("surprised");
         arrest.SetEmotion("nervous");
         arrest.SetDialogue(d_arrest);
@@ -347,7 +347,7 @@ public class Gamecontroller3 : MonoBehaviour
         record.AddNextNodes(nrecord);
         record.SetScore(60);
         record.SetTotal(100);
-        record.SetAnswer("No.");
+        record.SetAnswer("Never.");
         record.SetExpression("surprised");
         record.SetEmotion("nervous");
         record.SetDialogue(d_record);
@@ -358,7 +358,7 @@ public class Gamecontroller3 : MonoBehaviour
         who.AddNextNodes(nwho);
         who.SetScore(60);
         who.SetTotal(100);
-        who.SetAnswer("No.");
+        who.SetAnswer("no.");
         who.SetExpression("surprised");
         who.SetEmotion("nervous");
         who.SetDialogue(d_who);
@@ -368,7 +368,7 @@ public class Gamecontroller3 : MonoBehaviour
         keep.AddNextNodes(nkeep);
         keep.SetScore(60);
         keep.SetTotal(100);
-        keep.SetAnswer("No.");
+        keep.SetAnswer("no.");
         keep.SetExpression("surprised");
         keep.SetEmotion("nervous");
         keep.SetDialogue(d_keep);
@@ -378,7 +378,7 @@ public class Gamecontroller3 : MonoBehaviour
         gun.AddNextNodes(ngun);
         gun.SetScore(60);
         gun.SetTotal(100);
-        gun.SetAnswer("No.");
+        gun.SetAnswer("he doesn’t like me.");
         gun.SetExpression("surprised");
         gun.SetEmotion("nervous");
         gun.SetDialogue(d_gun);
@@ -389,7 +389,7 @@ public class Gamecontroller3 : MonoBehaviour
         calliber.AddNextNodes(ncalliber);
         calliber.SetScore(60);
         calliber.SetTotal(100);
-        calliber.SetAnswer("No.");
+        calliber.SetAnswer("no.");
         calliber.SetExpression("surprised");
         calliber.SetEmotion("nervous");
         calliber.SetDialogue(d_calliber);
@@ -408,21 +408,24 @@ public class Gamecontroller3 : MonoBehaviour
     {
 
         canvasGame = (Canvas)GameObject.Find("canvasGame").GetComponent<Canvas>();
-
-
+        instructions = (Canvas)GameObject.Find("canvasInstructions").GetComponent<Canvas>();
+        end = (Canvas)GameObject.Find("canvasend").GetComponent<Canvas>();
 
         mSlider = (Slider)GameObject.Find("Suspicionmeter").GetComponent<Slider>();
         button1 = (Button)GameObject.Find("button1").GetComponent<Button>();                        //find gameplay buttons in Unity
         button2 = (Button)GameObject.Find("button2").GetComponent<Button>();
         button3 = (Button)GameObject.Find("button3").GetComponent<Button>();
         button4 = (Button)GameObject.Find("button4").GetComponent<Button>();
+        buttonMainMenu = (Button)GameObject.Find("mainmenu").GetComponent<Button>();
+        buttonRestart = (Button)GameObject.Find("restart").GetComponent<Button>();
+
         //find the box where the cluelist is printed in Unity
         dialogueBoxCash = (Text)GameObject.Find("dialogueBoxCash").GetComponent<Text>();            //find the box where the player cash is printed in Unity
                                                                                                     //  this.dialogueBoxClueList.gameObject.SetActive(true);
         this.dialogueBoxCash.gameObject.SetActive(true);
         this.dialogueBoxCash.text = score.GetScore().ToString();
 
-
+        this.end.gameObject.SetActive(false);
         this.button1.gameObject.SetActive(false);
         this.button2.gameObject.SetActive(false);
         this.button3.gameObject.SetActive(false);
@@ -434,7 +437,9 @@ public class Gamecontroller3 : MonoBehaviour
         button2.onClick.AddListener(delegate { ButtonClicked(button2); EasyAudioUtility.instance.Play("Hover"); });
         button3.onClick.AddListener(delegate { ButtonClicked(button3); EasyAudioUtility.instance.Play("Hover"); });
         button4.onClick.AddListener(delegate { ButtonClicked(button4); EasyAudioUtility.instance.Play("Hover"); });
-        startbtn.onClick.AddListener(delegate { LoadGame(); EasyAudioUtility.instance.Play("Hover"); startbtn.gameObject.SetActive(false); });
+        startbtn.onClick.AddListener(delegate { this.instructions.gameObject.SetActive(false); LoadGame(); EasyAudioUtility.instance.Play("Hover"); startbtn.gameObject.SetActive(false); });
+        buttonMainMenu.onClick.AddListener(delegate { EasyAudioUtility.instance.Play("Hover"); SceneManager.LoadScene("MainMenu"); });
+        buttonRestart.onClick.AddListener(delegate { NewGame(); EasyAudioUtility.instance.Play("Hover"); });
 
     }
 
@@ -449,34 +454,45 @@ public class Gamecontroller3 : MonoBehaviour
         answer = currentNode.GetDialogue().ToString().Split('\t');
 
 
-        Debug.Log(answer[1]);
-        Debug.Log(answer[3]);
-        Debug.Log(answer[5]);
-        Debug.Log(word);
-        if (word.Equals(answer[1]))
+        try
         {
-            NodeNormal(button1);
+            if (word.Equals(answer[1]))
+            {
+                NodeNormal(button1);
+            }
+            if (word.Equals(answer[3]))
+            {
+                NodeNormal(button2);
+            }
+            if (word.Equals(answer[5]))
+            {
+                NodeNormal(button3);
+            }
+            if (word.Equals(answer[4]))
+            {
+                NodeNormal(button4);
+            }
         }
-        if (word.Equals(answer[3]))
-        {
-            NodeNormal(button2);
-        }
-        if (word.Equals(answer[5]))
-        {
-            NodeNormal(button3);
-        }
-        if (word.Equals(answer[4]))
-        {
-            NodeNormal(button4);
-        }
-
+        catch { }
 
 
 
     }
 
 
+    public void NewGame()
+    {
 
+        currentNode = office01;
+        score.SetScore(100);
+        this.dialogueBoxCash.text = "100";
+        this.mSlider.value = -(score.GetScore());
+        this.end.gameObject.gameObject.SetActive(false);
+        this.canvasGame.gameObject.SetActive(true);
+        StartCoroutine(TypeTextAndEnableButtonNormal(currentNode.GetDialogue()));
+        Debug.Log("sn");
+
+    }
 
 
     public static void getsavedvalues(int idl, int scorel, int btn)
@@ -537,25 +553,29 @@ public class Gamecontroller3 : MonoBehaviour
 
     private void ButtonClicked(Button b)
     {
-        
-      
-        int check= NodeNormal(b);
-        
+
+        int check = NodeNormal(b);
+
         if (check == 1)
         {
             this.button1.gameObject.SetActive(false);                   //by default, disable all the gameplay buttons until
             this.button2.gameObject.SetActive(false);                   //we know the possible options of currentNode
             this.button3.gameObject.SetActive(false);
             this.button4.gameObject.SetActive(false);
-         
-            dialogueBox.text = "Congratulations!!! \n you were good in your responses \n now you are not our suspect ";
-        }if(check == 2) {
+            this.end.gameObject.SetActive(true);
+
+            endnote.text = "Congratulations!!! \n you were good in your responses \n now you are not our suspect ";
+        }
+        if (check == 2)
+        {
             this.button1.gameObject.SetActive(false);                   //by default, disable all the gameplay buttons until
             this.button2.gameObject.SetActive(false);                   //we know the possible options of currentNode
             this.button3.gameObject.SetActive(false);
             this.button4.gameObject.SetActive(false);
-           
-            dialogueBox.text = "Oops!!! \n there were inconsistency in your responses"; }
+            this.end.gameObject.SetActive(true);
+
+            endnote.text = "Oops!!! \n there were inconsistency in your responses";
+        }
     }
 
     // 	 ========================================================================================================================================================= 	EXECUTING A NODE

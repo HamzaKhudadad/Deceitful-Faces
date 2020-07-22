@@ -18,6 +18,8 @@ public class Gamecontroller1 : MonoBehaviour
     // Canvas for the menu and in-game
 
     Canvas canvasGame;
+    Canvas instructions;
+    Canvas end;
     string expression = "happy";
     string emotion = "nervous";
     string[] expressions = { "angry", "disgust", "fear", "happy", "sad", "surprise", "neutral" };
@@ -30,6 +32,7 @@ public class Gamecontroller1 : MonoBehaviour
     private Texture background;
 
     public TextMeshProUGUI dialogueBox;
+    public TextMeshProUGUI endnote;
     public Button startbtn;
     public Slider mSlider;
     public RawImage image;
@@ -45,17 +48,17 @@ public class Gamecontroller1 : MonoBehaviour
 
 
 
-    private string[] keywords = new string[] { "Tom.", "don't know.", "3rd street north.", "Yes.", "No.", "we werer friends.", "we worked together.",
-        "he was a cop.", "there is a separate person for it.","in the safe.","0.9mm.","5mm.","less than a year.","around paradise hotel." };
-    public ConfidenceLevel confidence = ConfidenceLevel.Medium;
+    private string[] keywords = new string[] { "Tom.", "don't know.", "3rd street north.", "Yes.", "No.", "we were friends.", "we worked together.",
+        "he was a cop.", "there is a separate person for it.","in the safe.","0.9mm.","5mm.","less than a year.","around paradise hotel.","Zion.","1st street subway.",
+        "enimies.","AF housing company.","AK builders.","jailer.","someone from inspectors.","in SHO’s office.","in the safe.","any other place.","0.5mm.","a year.",
+    "less than a year.","more than  a year.","at my own house.","Out of city.","around paradise hotel.","some where else."};
+    public ConfidenceLevel confidence = ConfidenceLevel.Low;
     public string word;
     public KeywordRecognizer recognizer;
 
 
     // buttons for the menu
-    private Button buttonResume;
-    private Button buttonStartNewGame;
-    private Button buttonQuit;
+   
 
     // in-game buttons
     private Button button1;
@@ -65,6 +68,8 @@ public class Gamecontroller1 : MonoBehaviour
     private Button Mainmenu;
     private Button buttonClueList;
     private Button buttonMainMenu;
+    private Button buttonRestart;
+   
 
     // Main dialogue box, clue list and money available
 
@@ -170,9 +175,9 @@ public class Gamecontroller1 : MonoBehaviour
         "\n1.\tYes.\t \n" +
         "\n2.\tNo.\t";
     private string d_office = "what is the relation between tom and inspectort?\n" +
-       "\n1.\tfriends.\t \n" +
+       "\n1.\twe were friends.\t \n" +
        "\n2.\tenimies.\t \n" +
-       "\n3.\tcolleagues.\t \n" +
+       "\n3.\twe worked together.\t \n" +
        "\n4.\tdon't know.\t";
     private string d_work = "Do you know where tom worked?\n" +
       "\n1.\tAF housing company.\t \n" +
@@ -192,13 +197,13 @@ public class Gamecontroller1 : MonoBehaviour
       "\n1.\tYes.\t \n" +
         "\n2.\tNo.\t";
     private string d_record = "Do you know the interrogation room’s session been recorded?\n" +
-    "\n1.\tyes.\t \n" +
-    "\n2.\tno.\t \n" +
+    "\n1.\tYes.\t \n" +
+    "\n2.\tNo.\t \n" +
     "\n3.\tdon't know.\t";
     private string d_who = "If interrogation room’s session been recorded Who keeps the recordings?\n" +
     "\n1.\tjailer.\t \n" +
     "\n2.\tthere is a separate person for it.\t \n" +
-     "\n3.\t  someone from inspectors.\t \n" +
+     "\n3.\tsomeone from inspectors.\t \n" +
     "\n4.\tdon't know.\t";
 
     private string d_keep = "If interrogation room’s session been recorded, Where are all the recording tapes kept?\n" +
@@ -215,7 +220,7 @@ public class Gamecontroller1 : MonoBehaviour
    "\n3.\t5mm.\t";
 
     private string d_whyg = "Why do you keep a gun?\n" +
-  "\n1.\ta year .\t \n" +
+  "\n1.\ta year.\t \n" +
   "\n2.\tless than a year.\t \n" +
   "\n3.\t.more than  a year.\t";
 
@@ -287,7 +292,7 @@ public class Gamecontroller1 : MonoBehaviour
         office.AddNextNodes(nn_office);
         office.SetScore(60);
         office.SetTotal(100);
-        office.SetAnswer("friends.");
+        office.SetAnswer("we were friends.");
         office.SetExpression("surprised");
         office.SetEmotion("nervous");
         office.SetDialogue(d_office);
@@ -441,7 +446,8 @@ public class Gamecontroller1 : MonoBehaviour
 
 
         canvasGame = (Canvas)GameObject.Find("canvasGame").GetComponent<Canvas>();
-
+        instructions= (Canvas)GameObject.Find("canvasInstructions").GetComponent<Canvas>();
+        end = (Canvas)GameObject.Find("canvasend").GetComponent<Canvas>();
 
 
         mSlider = (Slider)GameObject.Find("Suspicionmeter").GetComponent<Slider>();
@@ -449,13 +455,15 @@ public class Gamecontroller1 : MonoBehaviour
         button2 = (Button)GameObject.Find("button2").GetComponent<Button>();
         button3 = (Button)GameObject.Find("button3").GetComponent<Button>();
         button4 = (Button)GameObject.Find("button4").GetComponent<Button>();
+        buttonMainMenu = (Button)GameObject.Find("mainmenu").GetComponent<Button>();
+        buttonRestart = (Button)GameObject.Find("restart").GetComponent<Button>();
         //find the box where the cluelist is printed in Unity
         dialogueBoxCash = (Text)GameObject.Find("dialogueBoxCash").GetComponent<Text>();            //find the box where the player cash is printed in Unity
                                                                                                     //  this.dialogueBoxClueList.gameObject.SetActive(true);
         this.dialogueBoxCash.gameObject.SetActive(true);
         this.dialogueBoxCash.text = score.GetScore().ToString();
 
-
+        this.end.gameObject.SetActive(false);
         this.button1.gameObject.SetActive(false);
         this.button2.gameObject.SetActive(false);
         this.button3.gameObject.SetActive(false);
@@ -467,7 +475,10 @@ public class Gamecontroller1 : MonoBehaviour
         button2.onClick.AddListener(delegate { ButtonClicked(button2); EasyAudioUtility.instance.Play("Hover"); });
         button3.onClick.AddListener(delegate { ButtonClicked(button3); EasyAudioUtility.instance.Play("Hover"); });
         button4.onClick.AddListener(delegate { ButtonClicked(button4); EasyAudioUtility.instance.Play("Hover"); });
-        startbtn.onClick.AddListener(delegate { LoadGame(); EasyAudioUtility.instance.Play("Hover"); startbtn.gameObject.SetActive(false); });
+        startbtn.onClick.AddListener(delegate { this.instructions.gameObject.SetActive(false); LoadGame(); EasyAudioUtility.instance.Play("Hover"); startbtn.gameObject.SetActive(false); });
+        buttonMainMenu.onClick.AddListener(delegate {  EasyAudioUtility.instance.Play("Hover"); SceneManager.LoadScene("MainMenu"); });
+        buttonRestart.onClick.AddListener(delegate { NewGame(); EasyAudioUtility.instance.Play("Hover"); });
+
 
     }
 
@@ -528,8 +539,22 @@ public class Gamecontroller1 : MonoBehaviour
     }
 
 
+    public void NewGame()
+    {
 
-    public void LoadGame()
+        currentNode = office01;
+        score.SetScore(100);
+        this.dialogueBoxCash.text = "100";
+        this.mSlider.value = -(score.GetScore());
+        this.end.gameObject.gameObject.SetActive(false);
+        this.canvasGame.gameObject.SetActive(true);
+        StartCoroutine(TypeTextAndEnableButtonNormal(currentNode.GetDialogue()));
+        Debug.Log("sn");
+
+    }
+
+
+        public void LoadGame()
     {
 
         Debug.Log(savedid);
@@ -586,8 +611,9 @@ public class Gamecontroller1 : MonoBehaviour
             this.button2.gameObject.SetActive(false);                   //we know the possible options of currentNode
             this.button3.gameObject.SetActive(false);
             this.button4.gameObject.SetActive(false);
+            this.end.gameObject.SetActive(true);
 
-            dialogueBox.text = "Congratulations!!! \n you were good in your responses \n now you are not our suspect ";
+            endnote.text = "Congratulations!!! \n you were good in your responses \n now you are not our suspect ";
         }
         if (check == 2)
         {
@@ -595,8 +621,9 @@ public class Gamecontroller1 : MonoBehaviour
             this.button2.gameObject.SetActive(false);                   //we know the possible options of currentNode
             this.button3.gameObject.SetActive(false);
             this.button4.gameObject.SetActive(false);
+            this.end.gameObject.SetActive(true);
 
-            dialogueBox.text = "Oops!!! \n there were inconsistency in your responses";
+            endnote.text = "Oops!!! \n there were inconsistency in your responses";
         }
     }
 

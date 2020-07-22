@@ -31,9 +31,9 @@ public class UIController : MonoBehaviour {
 
     // Use this for initialization
     IEnumerator Start () {
-        avatarOpen=true;
+        avatarOpen=false;
         camOpen = false;
-        Debug.Log(avatarOpen);
+       
         Escbutton = (Button)GameObject.Find("Escbutton").GetComponent<Button>();
         Escbutton.onClick.AddListener(delegate { btnclicked(); });
         avatarbutton = (Button)GameObject.Find("disableAvatar").GetComponent<Button>();

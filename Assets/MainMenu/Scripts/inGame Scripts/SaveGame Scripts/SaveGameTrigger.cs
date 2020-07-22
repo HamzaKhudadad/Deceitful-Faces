@@ -40,14 +40,53 @@ public class SaveGameTrigger : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-       
+        saveUI = GameObject.FindObjectOfType<SaveGameUI>().gameObject;
+        //saveUI.SetActive(false);
+
+        anim = saveUI.GetComponent<Animator>();
 
         //checking is this the trigger where the player saved the game
 
     }
 
-  
- 
+    void OnTriggerStay(Collider col)
+    {
+        //if player has entered trigger
+        if ( Input.GetKeyDown(saveUI.GetComponent<SaveGameUI>().SaveKey))
+        {
+            //find all UIs
+            allUI = GameObject.FindObjectsOfType<Canvas>();
+            //setting it in saveUI
+            saveUI.GetComponent<SaveGameUI>().allUI = allUI;
+
+            //disable all UI
+            for (int i = 0; i < allUI.Length; i++) {
+                allUI[i].gameObject.SetActive(false);
+            }
+            //pause game
+            Time.timeScale = 0.0000001f;
+            //enable UI
+            saveUI.SetActive(true);
+            //play UI anim
+            anim.Play("saveGameUI_open");
+            //retrieve scene name
+            sceneName = SceneManager.GetActiveScene().name;
+
+            //sending data to save UI
+            sendCurrentSavePointData();
+
+            
+        }
+    }
+
+    void sendCurrentSavePointData() {
+        saveUI.GetComponent<SaveGameUI>().saveName = saveName;
+        saveUI.GetComponent<SaveGameUI>().savePercentage = savePercentage;
+        saveUI.GetComponent<SaveGameUI>().saveTriggerId = saveTriggerId;
+        saveUI.GetComponent<SaveGameUI>().sceneName = sceneName;
+
+    }
+
     private void Update()
     {
       

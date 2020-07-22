@@ -206,7 +206,7 @@ public class SaveGameUI : MonoBehaviour {
 
 
 
-        if (SceneManager.GetActiveScene().name == "Qscreen")
+        if (SceneManager.GetActiveScene().name == "Qscreen1")
         {
             PlayerPrefs.SetInt("id", Gamecontroller1.id);
             PlayerPrefs.SetInt("Score", Gamecontroller1.sscore);
@@ -290,7 +290,7 @@ public class SaveGameUI : MonoBehaviour {
         Debug.Log(btn);
 #endif
 
-        if (SceneManager.GetActiveScene().name == "Qscreen") 
+        if (SceneManager.GetActiveScene().name == "Qscreen1") 
         { 
             Gamecontroller1.getsavedvalues(id, score, btn);
         }
